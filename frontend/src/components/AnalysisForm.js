@@ -9,8 +9,7 @@ export default function AnalysisForm() {
 
   // FIXED — ALWAYS USE BACKEND URL
   const API_BASE =
-    process.env.NEXT_PUBLIC_BACKEND_URL ||
-    "https://backendai-8yq3.onrender.com";
+    process.env.NEXT_PUBLIC_BACKEND_URL;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
