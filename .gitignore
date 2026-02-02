@@ -7,14 +7,13 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
-# ------------------------------
-# Environment files (VERY IMPORTANT)
-# ------------------------------
 .env
-.env.local
 .env.development
 .env.production
 .env.test
+
+# ALLOW frontend env file
+!.env.local
 
 # ------------------------------
 # Logs
