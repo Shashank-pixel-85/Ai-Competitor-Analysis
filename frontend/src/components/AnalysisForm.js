@@ -7,12 +7,9 @@ export default function AnalysisForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // FIXED — dynamic environment support
 const API_BASE =
   process.env.NEXT_PUBLIC_BACKEND_URL ||
-  (process.env.NODE_ENV === "development"
-    ? "http://localhost:10000"
-    : "https://backendai-8yq3.onrender.com"); 
+  "https://backendai-8yq3.onrender.com";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
