@@ -10,13 +10,18 @@ export default function HomePage() {
   const [error, setError] = useState('');
   const router = useRouter();
 
+  // ⭐ FIXED — backend URL handling
+  const API_BASE =
+    process.env.NEXT_PUBLIC_BACKEND_URL ||
+    "https://backendai-8yq3.onrender.com"; // your Render backend
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:5000/api/analyze', {
+      const response = await fetch(`${API_BASE}/api/analyze`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -30,9 +35,11 @@ export default function HomePage() {
         throw new Error(data.error?.message || 'Analysis failed');
       }
 
-      // Store results and navigate
+      // ⭐ FIXED — match your results page
       sessionStorage.setItem('analysisResults', JSON.stringify(data.data));
+
       router.push('/results');
+
     } catch (err) {
       setError(err.message);
     } finally {
@@ -43,28 +50,27 @@ export default function HomePage() {
   return (
     <div style={styles.container}>
       <div style={styles.card}>
-       <h1
-  style={{
-    ...styles.title,
-    display: "flex",
-    alignItems: "center",
-    gap: "9px",
-    justifyContent: "center",
-  }}
->
-  <img
-    src="bot.png"
-    alt="AI Bot Icon"
-    style={{
-      width: "80px",
-      height: "80px",
-      objectFit: "contain",
-      filter: "drop-shadow(0px 0px 6px rgba(0,0,0,0.5))",
-    }}
-  />
-  AI Competitor Analysis
-</h1>
- 
+        <h1
+          style={{
+            ...styles.title,
+            display: "flex",
+            alignItems: "center",
+            gap: "9px",
+            justifyContent: "center",
+          }}
+        >
+          <img
+            src="bot.png"
+            alt="AI Bot Icon"
+            style={{
+              width: "80px",
+              height: "80px",
+              objectFit: "contain",
+              filter: "drop-shadow(0px 0px 6px rgba(0,0,0,0.5))",
+            }}
+          />
+          AI Competitor Analysis
+        </h1>
 
         <p style={styles.subtitle}>
           Compare your website with competitors using AI-powered insights
@@ -95,11 +101,7 @@ export default function HomePage() {
             />
           </div>
 
-          {error && (
-            <div style={styles.error}>
-              ⚠️ {error}
-            </div>
-          )}
+          {error && <div style={styles.error}>⚠️ {error}</div>}
 
           <button
             type="submit"
@@ -131,7 +133,6 @@ const styles = {
     alignItems: 'center',
     justifyContent: 'center',
     padding: '20px',
-
     background: "radial-gradient(circle at top, #3a3a3a 0%, #1f1f1f 45%, #141414 100%)",
     backgroundAttachment: "fixed",
   },
@@ -140,8 +141,6 @@ const styles = {
     width: "100%",
     padding: "40px",
     borderRadius: "22px",
-
-    /* Glass effect */
     background: "rgba(255,255,255,0.07)",
     border: "1px solid rgba(255,255,255,0.12)",
     backdropFilter: "blur(20px)",
@@ -183,7 +182,6 @@ const styles = {
     borderRadius: "10px",
     fontSize: "15px",
     outline: "none",
-
     background: "rgba(0,0,0,0.35)",
     border: "1px solid rgba(255,255,255,0.15)",
     color: "#cec6c6",

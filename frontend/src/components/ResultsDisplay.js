@@ -5,7 +5,7 @@ export default function ResultsDisplay() {
   const [report, setReport] = useState(null);
 
   useEffect(() => {
-    const json = localStorage.getItem("analysisReport");
+    const json = sessionStorage.getItem("analysisResults");
     if (json) {
       setReport(JSON.parse(json));
     }
