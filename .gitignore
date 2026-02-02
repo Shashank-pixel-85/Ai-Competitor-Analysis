@@ -12,8 +12,6 @@ pnpm-debug.log*
 .env.production
 .env.test
 
-# ALLOW frontend env file
-!.env.local
 
 # ------------------------------
 # Logs
