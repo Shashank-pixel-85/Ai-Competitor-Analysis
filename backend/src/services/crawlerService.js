@@ -10,47 +10,28 @@ class CrawlerService {
     try {
       logger.info(`Crawling started: ${url}`);
 
-      /* ----------------------------------------------------
-          FIX 1: Reliable Chromium launch for Render
-      ---------------------------------------------------- */
-      const executablePath = await chromium.executablePath;
+      const executablePath = await chromium.executablePath();
 
       browser = await puppeteer.launch({
         executablePath,
-        args: [
-          ...chromium.args,
-          "--no-sandbox",
-          "--disable-dev-shm-usage",
-          "--disable-gpu",
-          "--single-process",
-          "--no-zygote"
-        ],
+        args: chromium.args,
         defaultViewport: chromium.defaultViewport,
-        headless: chromium.headless,
-        ignoreHTTPSErrors: true,
+        headless: true, // FORCE TRUE on Render
       });
 
-      /* ----------------------------------------------------
-          FIX 2: Open page safely
-      ---------------------------------------------------- */
       const page = await browser.newPage();
 
       await page.setUserAgent(
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 CompetitorAnalyzerBot"
       );
 
-      await page.setDefaultNavigationTimeout(60000);
-
       await page.goto(url, {
-        waitUntil: ["load", "domcontentloaded"],
+        waitUntil: "networkidle2",
         timeout: 60000,
       });
 
-      await page.waitForTimeout(1500);
+      await page.waitForTimeout(2000);
 
-      /* ----------------------------------------------------
-          FIX 3: Extract HTML safely
-      ---------------------------------------------------- */
       const html = await page.content();
       const $ = cheerio.load(html);
 
@@ -80,22 +61,13 @@ class CrawlerService {
       };
 
       await browser.close();
-
       logger.info(`Crawl success: ${url}`);
+
       return data;
-
     } catch (e) {
+      if (browser) await browser.close();
       logger.error(`Crawl failed for ${url}: ${e.message}`);
-
-      try {
-        if (browser) await browser.close();
-      } catch (_) {}
-
-      return {
-        error: true,
-        message: e.message,
-        url,
-      };
+      return { error: true, message: e.message, url };
     }
   }
 }
