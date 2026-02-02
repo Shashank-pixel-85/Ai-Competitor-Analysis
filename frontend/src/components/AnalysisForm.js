@@ -37,8 +37,8 @@ const API_BASE =
       }
 
       // Save full analysis to localStorage so results page can read it
-      localStorage.setItem("analysisReport", JSON.stringify(data.data));
-
+  sessionStorage.setItem("analysisResults", JSON.stringify(data.data));
+  
       // Redirect to results page
       window.location.href = "/results";
 
